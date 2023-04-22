@@ -10,6 +10,8 @@ Optionally, you can also add the --share flag to generate a public gradio URL,
 allowing you to use the API remotely.
 
 '''
+import json
+
 import requests
 
 # Server address
@@ -20,10 +22,10 @@ server = "127.0.0.1"
 params = {
     'max_new_tokens': 200,
     'do_sample': True,
-    'temperature': 0.5,
-    'top_p': 0.9,
+    'temperature': 0.72,
+    'top_p': 0.73,
     'typical_p': 1,
-    'repetition_penalty': 1.05,
+    'repetition_penalty': 1.1,
     'encoder_repetition_penalty': 1.0,
     'top_k': 0,
     'min_length': 0,
@@ -33,29 +35,21 @@ params = {
     'length_penalty': 1,
     'early_stopping': False,
     'seed': -1,
+    'add_bos_token': True,
+    'truncation_length': 2048,
+    'ban_eos_token': False,
+    'skip_special_tokens': True,
+    'stopping_strings': [],
 }
 
 # Input prompt
 prompt = "What I would like to say is the following: "
 
+payload = json.dumps([prompt, params])
+
 response = requests.post(f"http://{server}:7860/run/textgen", json={
     "data": [
-        prompt,
-        params['max_new_tokens'],
-        params['do_sample'],
-        params['temperature'],
-        params['top_p'],
-        params['typical_p'],
-        params['repetition_penalty'],
-        params['encoder_repetition_penalty'],
-        params['top_k'],
-        params['min_length'],
-        params['no_repeat_ngram_size'],
-        params['num_beams'],
-        params['penalty_alpha'],
-        params['length_penalty'],
-        params['early_stopping'],
-        params['seed'],
+        payload
     ]
 }).json()
 
